@@ -1,0 +1,13 @@
+.mainTitle, .subtitle, .logo{
+  display: inline;
+}
+.menu {
+  width: 20%;
+  padding: 20px;
+  margin: 20px;
+  background-color: lime;
+}
+.mainContent {
+  width: 80%;
+
+}

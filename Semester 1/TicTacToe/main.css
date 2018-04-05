@@ -1,0 +1,151 @@
+html {
+    background-color: aquamarine;
+}
+
+h2,
+h3 {
+    border: 2px solid white;
+    display: inline-flex;
+    margin: 5px 10px;
+    padding: 5px 30px;
+
+    text-align: center;
+    font-family: sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+
+    background-color: none;
+    color: white;
+}
+
+table {
+    margin: auto;
+    border-collapse: collapse;
+}
+
+table tr:first-child td {
+    border-top: 0;
+}
+
+table tr:last-child td {
+    border-bottom: 0;
+}
+
+table tr td:first-child {
+    border-left: 0;
+}
+
+table tr td:last-child {
+    border-right: 0;
+}
+
+td {
+    width: 200px;
+    height: 200px;
+    border: 10px solid white;
+}
+
+svg {
+    width: 100px;
+    height: 100px;
+}
+
+td > svg {
+    padding: 50px;
+}
+
+input {
+    height: inherit;
+    width: inherit;
+    background-color: aquamarine;
+    border: none;
+}
+
+.btn {
+    height: 50px;
+    width: 100px;
+
+    text-align: center;
+    font-family: sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+
+    border: solid white 2px;
+    color: white;
+
+    margin: 20px;
+}
+
+.btn:hover {
+    background-color: white;
+    color: aquamarine;
+    border: none;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.fade-in {
+    animation: fadeIn .5s ease-in forwards;
+}
+
+.fade-out {
+    animation: fadeOut .5s ease-in forwards;
+}
+
+.blur {
+    filter: blur(2px);
+}
+
+#game {
+    position: absolute;
+    left: 50%;
+    top: 0%;
+    transform: translate(-50%, 0);
+}
+
+#end-game {
+    display: none;
+}
+
+#player-selection,
+#end-game {
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    width: 700px;
+    height: 200px;
+    padding-top: 100px;
+    background-color: rgba(127, 255, 212, 0.7);
+    transform: translate(-50%, 0);
+    border: solid white 5px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        visibility: hidden;
+    }
+    to {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        visibility: visible;
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}

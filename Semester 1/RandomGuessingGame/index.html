@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Guessing Game</title>
+  <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+
+<body>
+  <div>
+    <h1>Guessing Number Game</h1>
+    <table id="game">
+      <tr>
+        <td colspan="3" name="message">Please enter a number between 1 - 50</td>
+      </tr>
+      <tr>
+        <td colspan="3"><input type="number" id="input" value=" "></td>
+      </tr>
+      <tr>
+        <td><input type="button" class="btn" id="try1" value="Try 1" onclick="onClicked(document.getElementById('try1'), document.getElementById('try2'));" /></td>
+        <td><input type="button" class="btn" id="try2" value="Try 2" onclick="onClicked(document.getElementById('try2'), document.getElementById('try3'));" /></td>
+        <td><input type="button" class="btn" id="try3" value="Try 3" onclick="onClicked(document.getElementById('try3'), null);" />
+          <td>
+      </tr>
+    </table>
+  </div>
+  <div id="game-over-div">
+    <h2 name="message"><h2>
+    <input type="button" class="btn" id="retry" value="Retry" onclick="retry();" style="display:none;">
+  </div>
+</body>
+<script>
+  var randomNum = Math.floor(Math.random() * 50 + 1); //variable to find random Number
+
+  //Retrieving both the message, and the retry Button
+  var message = document.getElementsByName('message');
+  var retryBtn = document.getElementById('retry');
+
+  var input = document.getElementById('input');
+  var try1 = document.getElementById('try1');
+  var try2 = document.getElementById('try2');
+  var try3 = document.getElementById('try3');
+
+  var gameoverDiv = document.getElementById('game-over-div');
+  var game = document.getElementById('game');
+
+  var guess;
+  var guesses = [];
+  var count = 0;
+
+  gameoverDiv.style.display = "none;";
+
+  try2.setAttribute("disabled", true);
+  try3.setAttribute("disabled", true);
+
+//When the function on clicked is called, it pulls that guess and checks
+//to see if its equal to the random Number
+  function onClicked(currentBtn, nextBtn) {
+    currentBtn.setAttribute("disabled", true);
+
+    console.log(randomNum);
+
+    guess = input.value;
+    guesses[count] = guess;
+
+    //Checker
+    if (guess < randomNum) {
+      message[0].textContent = "Your Guess is under";
+    } else if (guess > randomNum) {
+      message[0].textContent = "Your Guess is over";
+    } else {
+      message[0].textContent = "You Won!";
+      gameOver(true);
+    }
+
+    if(nextBtn != null){
+    nextBtn.removeAttribute("disabled");
+  } else {
+    gameOver(false);
+  }
+
+    input.value = " ";//sets the value to blank
+    count++;//increment counter for each guess made by 1
+  }
+
+  //function called to restart the game, by reseting some variables
+  function retry() {
+    retryBtn.setAttribute("style", "display:none;");
+    randomNum = Math.floor(Math.random() * 50 + 1);
+
+    //making sure all the buttons are visable
+    gameoverDiv.style.borderWidth = '0px;';
+    gameoverDiv.style.display = 'none';
+    game.style.display = 'table';
+
+    try1.removeAttribute("disabled");
+
+    el = try1; //button it changed back to the first one
+    message[0].textContent = "Please enter a number between 1 - 50";
+    guess.textContent = 25;
+    count = 0;
+  }
+  //gameOver function is called when the game ends, it passes a bool as an argument
+  function gameOver() {
+    var win = arguments[0];//refrencing the variable to the argument
+
+    gameoverDiv.style.display = 'block';
+    gameoverDiv.style.borderWidth = '10px';
+    game.style.display = 'none';
+
+    //checks to see if the player won and displays guesses and/or answer
+    if (win == true) {
+      message[1].textContent = "You Won! Guesses were: " + guesses[0] +" "+ guesses[1];
+      retryBtn.setAttribute("style", "display:block;");
+      gameoverDiv.style.borderColor = "green";
+    } else {
+      message[1].textContent = "Try Again? Guesses were: " + guesses[0]+ " " + guesses[1] + " " + guesses[2] + " Answer was : " + randomNum;
+      retryBtn.setAttribute("style", "display:block;");
+      gameoverDiv.style.borderColor = "red";
+    }
+  }
+</script>
+
+</html>

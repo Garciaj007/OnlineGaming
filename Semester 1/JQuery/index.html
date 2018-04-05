@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>JQuery</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+    /*
+    function helloWorld(){
+      alert("Hello");
+      document.getElementById('info').innerHTML = "Hello";
+
+      var getdiv = document.getElementById("info");
+      getdiv.innerHTML = "Hello";
+    }
+    function hideDiv(){
+      document.getElementById('info').style.display="none";
+    }
+    function showDiv(){
+      document.getElementById('info').style.display="block";
+    }
+
+    function writeParagraph(){
+      alert("writing paragraph");
+      document.getElementById("paragraph").innerHTML="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    }
+
+    function clearParagraph(){
+      alert("clearing paragraph");
+      document.getElementById("paragraph").innerHTML="";
+    }
+
+    function hideParagraph(){
+      alert("hiding paragraph");
+      document.getElementById("paragraph").style.display="none";
+    }
+
+    function showParagraph(){
+      alert("showing paragraph");
+      document.getElementById("paragraph").style.display="block";
+    }
+    */
+    var guess;
+    $(document).ready(function(){
+      prompt("Pls enter your guess", guess);
+    });
+    if(isNaN(guess)){
+      console.log("guess is a string");
+    } else {
+      console.log("guess is a number");
+    }
+    var number = parseInt(guess);
+    if(isNaN(number)){
+      console.log("guess is a string");
+    } else {
+      console.log("guess is a number");
+    }
+    </script>
+  </head>
+
+
+  <body>
+    <!--
+    <div id="info">this is some text</div>
+    <input type="submit" value="Submit" onclick="helloWorld();"/>
+    <button  name="button" onclick="hideDiv();">Hide</button></br>
+    <button  name="button" onclick="showDiv();">Show</button>
+
+    <p id="paragraph">
+
+    </p>
+  </br>
+    <button name="button" onclick="writeParagraph();">Write</button>
+    <button type="button" onclick="clearParagraph();">Clear</button>
+    <button type="button" onclick="hideParagraph();">Hide</button>
+    <button type="button" onclick="showParagraph();">Show</button>
+  -->
+  </body>
+
+</html>

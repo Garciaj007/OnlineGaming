@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Exersices</title>
+</head>
+
+<body>
+  <!-- Exercise 1
+  <h3>Please enter 5 numbers...</h3>
+  <input type="text" id="input">
+  <input type="button" value="Submit" onclick="getNumber()" />
+-->
+  <!-- Exercise 2
+  <p id="message"></p>
+-->
+  <!-- Exercise 3
+  <table border="1px" id="student-table">
+    <tr>
+      <th>StudentName</th>
+      <th>Marks</th>
+      <th>Grade</th>
+    </tr>
+  </table>
+-->
+  <!-- Exercise 4
+<p id="star"> </p>
+-->
+</body>
+<script>
+  /* -------------------Exersize 1 ------------------------
+    var value = document.getElementById('input');
+    var numbers = [5];
+    var counter = 0;
+
+    function getNumber() {
+      numbers[counter] = parseInt(value.value);
+      counter++;
+
+      if (counter >= 5) {
+        numbers.sort(function(a, b) {
+          return a - b;
+        });
+        alert(numbers);
+        counter = 0;
+      }
+      console.log(numbers);
+    }
+    */
+
+
+  /* ----------------- Excersise 2 -----------------------
+  for(var i = 0; i <= 15; i++){
+    if(i % 2 == 0){
+      var msg = document.getElementById('message');
+      message.textContent = message.textContent + " " + i + ": is Even | ";
+    } else {
+      message.textContent = message.textContent + " " + i + ": is Odd | ";
+    }
+  } */
+
+
+  /* ------------------ Excersise 3 ---------------------
+  var names = ["Don", "William", "Jason", "Justin", "Tom"];
+  var marks = [84,77,88,95,68];
+  var grade = [];
+  var studentTable = document.getElementById('student-table');
+
+  for(var i = 0; i < names.length; i++){
+    grade[i] = letterGrade(marks[i]);
+    studentTable.innerHTML = studentTable.innerHTML + "<tr><td>"+names[i]+"</td><td>"+marks[i]+"</td><td>"+grade[i]+"</td></tr>"
+  }
+
+  function letterGrade(){
+    if(arguments[0] < 60){
+      return 'F';
+    } else if(arguments[0] < 70){
+      return 'D';
+    } else if(arguments[0] < 80){
+      return 'C';
+    } else if(arguments[0] < 90){
+      return 'B';
+    } else{
+      return 'A';
+    }
+  }
+  */
+
+  /*--------------------- Excersise 4 ----------------------
+  var stars = document.getElementById('star');
+  var star = " ";
+
+  for(var i = 0; i < 6; i++){
+    star = star + "*";
+    stars.innerHTML = stars.innerHTML + "<p>"+star+"</p>";
+  }
+  */
+
+  /*---------------------- Excersise 5 ----------------------
+    for(var i = 1; i <= 100; i++){
+      if(i % 3 == 0 && i % 5 ==0){
+        console.log("HumBer");
+      } else if(i % 3 == 0){
+        console.log("Hum");
+      } else if(i % 5 == 0){
+        console.log("Ber");
+      }
+    }
+    */
+</script>
+
+</html>

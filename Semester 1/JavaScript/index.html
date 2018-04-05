@@ -1,0 +1,53 @@
+<!Doctype html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Alert</title>
+
+    <script>
+        function getValue(){
+          var myValue = document.getElementsByName("FName")[0].value;
+          alert(myValue);
+
+          var myRadio = document.getElementsByName("Music");
+
+          for(var i = 0; i < myRadio.length; i++){
+            if(myRadio[i].checked){
+              alert(myRadio[i].value);
+            }
+          }
+        }
+    </script>
+
+    </script>
+  </head>
+  <body>
+    <h2>Hello</h2>
+
+    <form>
+      <table>
+        <tr>
+          <td><label>First Name</label></td>
+          <td><input type="text" name="FName"></td>
+        </tr>
+        <tr>
+          <td><label>Music</label></td>
+          <td>
+            <input type="radio" name="Music" value="Rock">Rock
+            <input type="radio" name="Music" value="Pop">Pop
+            <input type="radio" name="Music" value="Dance">Dance
+            <input type="radio" name="Music" value="Classical">Classical
+          </td>
+
+        </tr>
+        <tr>
+          <td></td>
+          <td><input type="submit" name="submitQuery" value="Submit" onclick="getValue();"/></td>
+        </tr>
+      </table>
+
+    </form>
+
+  </body>
+</html>

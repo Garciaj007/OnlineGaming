@@ -1,0 +1,30 @@
+body{
+    background-color: darkslategrey;
+}
+
+canvas{
+    border: 2px solid white;
+}
+
+input{
+    border: 1px white solid;
+    color: white;
+    background-color: transparent;
+    padding: 10px 20px;
+    border-radius: 2px;
+    font-size: 1.6ems;
+    font-weight: bold;
+}
+
+input:hover, input:focus{
+    background-color: white;
+    color: darkslategray;
+    border-color: darkslategray;
+}
+
+.container{
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0px auto;
+    text-align: center;
+}
