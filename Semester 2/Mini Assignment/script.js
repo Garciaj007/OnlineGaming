@@ -5,19 +5,28 @@ window.addEventListener('load', init);
 window.addEventListener('keydown', keydownHandler);
 window.addEventListener('keyup', keyupHandler);
 
-var canvas, context, width, height;
+var canvas, context;
 var ramonaIdle, ramonaWalking, ramonaJumping, ramonaPunch, ramonaGuard, ramonaKick, ramonaTech;
 var action = {
-    idle: true
+    idle: true,
+    moveRight: false,
+    moveLeft: false,
+    jump: false,
+    punch: false,
+    guard: false,
+    kick: false,
+    super: false
 };
 var intervalID;
 var player;
 
+const WIDTH = 800, HEIGHT = 600;
+
 function init() {
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
-    width = canvas.width;
-    height = canvas.height;
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
 
     createSprite();
     intervalID = setInterval(draw, 16);
@@ -89,7 +98,6 @@ function draw() {
     if (action.jump) {
         ramonaJumping.update();
         ramonaJumping.render();
-
     }
 
     if (action.punch) {
@@ -138,7 +146,7 @@ function Sprite(SpriteContext) {
 }
 
 function Player() {
-    this.position = new Vector(width / 2, height / 2);
+    this.position = new Vector(WIDTH / 2, HEIGHT / 2);
     this.velocity = new Vector(0, 0);
     this.acceleration = new Vector(0, 0);
     this.sprites = Sprites;
@@ -194,13 +202,13 @@ Player.prototype.update = function () {
 //General Functions
 
 function clearCanvas() {
-    context.clearRect(0, 0, width, height);
+    context.clearRect(0, 0, WIDTH, HEIGHT);
 }
 
 function keydownHandler() {
-    if (event.defaultPrevented) {
-        return;
-    }
+    //if (event.defaultPrevented) {
+    //    return;
+    //}
 
     switch (event.code) {
         case "ArrowLeft":
@@ -241,9 +249,9 @@ function keydownHandler() {
 }
 
 function keyupHandler() {
-    if (event.defaultPrevented) {
-        return;
-    }
+    //if (event.defaultPrevented) {
+    //    return;
+    //}
 
     switch (event.code) {
         case "ArrowLeft":
