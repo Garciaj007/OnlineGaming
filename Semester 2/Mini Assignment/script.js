@@ -2,193 +2,146 @@
 //Canvas sprite assignment
 
 window.addEventListener('load', init);
-window.addEventListener('keydown', keydownHandler);
+window.addEventListener('keypress', keydownHandler);
 window.addEventListener('keyup', keyupHandler);
 
-var canvas, context;
-var ramonaIdle, ramonaWalking, ramonaJumping, ramonaPunch, ramonaGuard, ramonaKick, ramonaTech;
-var action = {
-    idle: true,
-    moveRight: false,
-    moveLeft: false,
+const WIDTH = 800,
+    HEIGHT = 600;
+var canvas, ctx, intervalID, player, r_Anim, ramona;
+
+var controller = {
+    left: false,
+    right: false,
     jump: false,
     punch: false,
-    guard: false,
     kick: false,
-    super: false
-};
-var intervalID;
-var player;
+    tech: false,
+    guard: false
+}
 
-const WIDTH = 800, HEIGHT = 600;
+var ramona = {
+    ramonaIdle: new Sprite("Sprites/Ramona_Idle.png", 6, 4, true, new Vector(300, 70)),
+    ramonaWalkingRight: new Sprite("Sprites/Ramona_Walking_Right.png", 6, 4, true, new Vector(300, 70)),
+    ramonaWalkingLeft: new Sprite("Sprites/Ramona_Walking_Left.png", 6, 4, true, new Vector(300, 70)),
+    ramonaJumpingRight: new Sprite("Sprites/Ramona_Jumping_Right.png", 8, 4, false, new Vector(480, 80)),
+    ramonaJumpingLeft: new Sprite("Sprites/Ramona_Jumping_Left.png", 8, 4, false, new Vector(480, 80)),
+    ramonaPunchRight: new Sprite("Sprites/Ramona_Punch_Right.png", 3, 8, false, new Vector(180, 65)),
+    ramonaPunchLeft: new Sprite("Sprites/Ramona_Punch_Left.png", 3, 8, false, new Vector(180, 65)),
+    ramonaKickRight: new Sprite("Sprites/Ramona_Kick_Right.png", 5, 8, false, new Vector(300, 70)),
+    ramonaKickLeft: new Sprite("Sprites/Ramona_Kick_Left.png", 5, 8, false, new Vector(300, 70)),
+    ramonaGuardRight: new Sprite("Sprites/Ramona_Guard_Right.png", 5, 8, false, new Vector(250, 70)),
+    ramonaGuardLeft: new Sprite("Sprites/Ramona_Guard_Left.png", 5, 8, false, new Vector(250, 70)),
+    ramonaTechRight: new Sprite("Sprites/Ramona_Tech.png", 13, 8, false, new Vector(1170, 80)),
+    ramonaTechLeft: new Sprite("Sprites/Ramona_Tech.png", 13, 8, false, new Vector(1170, 80))
+}
 
 function init() {
     canvas = document.getElementById('canvas');
-    context = canvas.getContext('2d');
+    ctx = canvas.getContext('2d');
     canvas.width = WIDTH;
     canvas.height = HEIGHT;
 
-    createSprite();
-    intervalID = setInterval(draw, 16);
+    r_Anim = new Animation(ramona.ramonaIdle);
+    player = new Player(r_Anim, new Vector(WIDTH / 2, HEIGHT / 2));
+
+    intervalID = setInterval(Render, 16);
 }
 
-function createSprite(){
-    ramonaIdle = new Sprite({
-        URL: "Sprites/Ramona_Idle.png",
-        width: 300,
-        height: 70,
-        ticksPerFrame: 4,
-        numOfFrames: 6,
-        loop: true
-    });
-
-    ramonaWalking = new Sprite({
-        URL: "Sprites/Ramona_Walking.png",
-        width: 300,
-        height: 70,
-        ticksPerFrame: 4,
-        numOfFrames: 6,
-        loop: true
-    });
-
-    ramonaJumping = new Sprite({
-        URL: "Sprites/Ramona_Jumping.png",
-        width: 480,
-        height: 80,
-        ticksPerFrame: 4,
-        numOfFrames: 8,
-    });
-
-    ramonaPunch = new Sprite({
-        URL: "Sprites/Ramona_Punch.png",
-        width: 180,
-        height: 65,
-        ticksPerFrame: 8,
-        numOfFrames: 3,
-    });
-
-    ramonaKick = new Sprite({
-        URL: "Sprites/Ramona_Kick.png",
-        width: 300,
-        height: 70,
-        ticksPerFrame: 8,
-        numOfFrames: 5,
-    });
-
-    ramonaGuard = new Sprite({
-        URL: "Sprites/Ramona_Guard.png",
-        width: 250,
-        height: 70,
-        ticksPerFrame: 8,
-        numOfFrames: 5,
-    });
-
-    ramonaTech = new Sprite({
-        URL: "Sprites/Ramona_Tech.png",
-        width: 1170,
-        height: 80,
-        ticksPerFrame: 8,
-        numOfFrames: 13,
-    });
-}
-
-function draw() {
+function Render() {
     clearCanvas();
 
-    if (action.jump) {
-        ramonaJumping.update();
-        ramonaJumping.render();
+    if (controller.left) {
+        player.animation.set(ramona.ramonaWalkingLeft);
+        player.velocity.x = -1;
+    } else if (controller.right) {
+        player.animation.set(ramona.ramonaWalkingRight);
+        player.velocity.x = 1;
+    } else {
+        player.animation.set(ramona.ramonaIdle);
+        player.velocity.x = 0;
     }
 
-    if (action.punch) {
-        ramonaPunch.update();
-        ramonaPunch.render();
-    }
-
-    if (action.idle) {
-        ramonaIdle.update();
-        ramonaIdle.draw();
-        ramonaIdle.inverted();
-    }
-
-    if (action.moveLeft || action.moveRight) {
-        ramonaWalking.update();
-        ramonaWalking.render();
-    }
-
-    if (action.guard) {
-        ramonaGuard.update();
-        ramonaGuard.render();
-    }
-
-    if (action.kick) {
-        ramonaKick.update();
-        ramonaKick.render();
-    }
-
-    if (action.super) {
-        ramonaTech.update();
-        ramonaTech.render();
-    }
+    player.animation.draw();
+    player.animation.update();
+    player.update();
 }
 
 //Classes
-function Sprite(SpriteContext) {
+function Sprite(_url, _numFrames, _tickFrames, _loop, _size, _position) {
+    this.URL = _url || " ";
+    this.numOfFrames = _numFrames || 0;
+    this.ticksPerFrame = _tickFrames || 0;
+    this.loop = _loop || false;
+    this.size = _size || new Vector();
+    this.position = _position || new Vector();
+}
+
+function Animation(sprite) {
     this.frameIndex = 0;
     this.tickCount = 0;
-    this.ticksPerFrame = SpriteContext.ticksPerFrame || 0;
-    this.numOfFrames = SpriteContext.numOfFrames || 0;
-    this.loop = SpriteContext.loop || false;
-    this.width = SpriteContext.width || 0;
-    this.height = SpriteContext.height || 0;
+    this.ticksPerFrame = sprite.ticksPerFrame;
+    this.numOfFrames = sprite.numOfFrames;
+    this.loop = sprite.loop;
+    this.size = sprite.size;
+    this.position = sprite.position;
     this.image = new Image();
-    this.image.src = SpriteContext.URL || null;
+    this.image.src = sprite.URL;
 }
 
-function Player() {
-    this.position = new Vector(WIDTH / 2, HEIGHT / 2);
-    this.velocity = new Vector(0, 0);
-    this.acceleration = new Vector(0, 0);
-    this.sprites = Sprites;
-    this.currentSprite = new Sprite();
+function Player(animation, initialPosition) {
+    if (arguments.length == 1) {
+        this.animation = animation || null;
+        this.animation.position = new Vector();
+    } else if (arguments.length == 2) {
+        this.animation = animation || null;
+        this.animation.position = initialPosition || new Vector();
+    }
+    this.velocity = new Vector();
+    this.acceleration = new Vector();
 }
 
-function Vector(x, y) {
+function Vector(x = 0, y = 0) {
     this.x = x;
     this.y = y;
 }
 
 //Functional Prototypes
 
-Sprite.prototype.update = function () {
-    this.tickCount += 1;
-    if (this.tickCount > this.ticksPerFrame) {
-        this.tickCount = 0;
-        if (this.frameIndex < this.numOfFrames - 1) {
-            this.frameIndex += 1;
-        } else if (this.loop) {
-            this.frameIndex = 0;
+Animation.prototype.update = function () {
+    if (arguments.length == 0) {
+        this.tickCount += 1;
+        if (this.tickCount > this.ticksPerFrame) {
+            this.tickCount = 0;
+            if (this.frameIndex < this.numOfFrames - 1) {
+                this.frameIndex += 1;
+            } else if (this.loop) {
+                this.frameIndex = 0;
+            }
+        }
+    } else {
+        if (arguments[0] < this.numOfFrames - 1) {
+            this.frameIndex = arguments[0];
         }
     }
 }
 
-Sprite.prototype.draw = function (position = new Vector(0, 0)) {
-    //context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-    context.drawImage(this.image, this.frameIndex * this.width / this.numOfFrames, 0, this.width / this.numOfFrames, this.height, position.x, position.y, this.width / this.numOfFrames, this.height);
+Animation.prototype.draw = function (position = new Vector(0, 0)) {
+    //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+    ctx.drawImage(this.image, this.frameIndex * this.size.x / this.numOfFrames, 0, this.size.x / this.numOfFrames, this.size.y, this.position.x, this.position.y, this.size.x / this.numOfFrames, this.size.y);
 }
 
-Sprite.prototype.inverted = function (position = new Vector(0, 0)) {
-    context.save();
-    context.translate(position.x, position.y);
-    context.scale(-1, 1);
-    //context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-    context.drawImage(this.image, this.frameIndex * this.width / this.numOfFrames, 0, this.width / this.numOfFrames, this.height, -(this.width / this.numOfFrames), 0, this.width / this.numOfFrames, this.height);
-    context.restore();
+Animation.prototype.set = function (sprite) {
+    this.ticksPerFrame = sprite.ticksPerFrame;
+    this.numOfFrames = sprite.numOfFrames;
+    this.loop = sprite.loop;
+    this.size = sprite.size;
+    this.image = new Image();
+    this.image.src = sprite.URL;
 }
 
-Vector.prototype.add = function (v = Vector(0, 0)) {
-    this.x += v.x;
-    this.y += v.y;
+Animation.prototype.reset = function () {
+    this.frameIndex = 0;
+    this.tickCount = 0;
 }
 
 Player.prototype.applyForce = function (force) {
@@ -196,96 +149,44 @@ Player.prototype.applyForce = function (force) {
 }
 
 Player.prototype.update = function () {
-    this.position.add(this.velocity);
+    this.animation.position.add(this.velocity);
     this.velocity.add(this.acceleration);
 }
-//General Functions
 
-function clearCanvas() {
-    context.clearRect(0, 0, WIDTH, HEIGHT);
+Vector.prototype.add = function (v = Vector(0, 0)) {
+    this.x += v.x;
+    this.y += v.y;
 }
 
-function keydownHandler() {
-    //if (event.defaultPrevented) {
-    //    return;
-    //}
+Vector.prototype.set = function(x = 0, y = 0){
+    this.x = x;
+    this.y = y;
+}
 
-    switch (event.code) {
-        case "ArrowLeft":
+//Helper Functions
+
+function clearCanvas() {
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+}
+
+function keydownHandler(e) {
+    switch (e.code) {
         case "KeyA":
-            action.idle = false;
-            action.moveLeft = true;
+            controller.left = true;
             break;
-        case "ArrowRight":
         case "KeyD":
-            action.idle = false;
-            action.moveRight = true;
-            break;
-        case "Space":
-            action.idle = false;
-            action.jump = true;
-            break;
-        case "ControlLeft":
-            action.idle = false;
-            action.guard = true;
-            break;
-        case "KeyF":
-            action.idle = false;
-            action.kick = true;
-            break;
-        case "KeyE":
-            action.idle = false;
-            action.punch = true;
-            break;
-        case "KeyQ":
-            action.idle = false;
-            action.super = true;
-            break;
-        default:
-            action.idle = false;
-            action.idle = true;
+            controller.right = true;
             break;
     }
 }
 
-function keyupHandler() {
-    //if (event.defaultPrevented) {
-    //    return;
-    //}
-
-    switch (event.code) {
-        case "ArrowLeft":
+function keyupHandler(e) {
+    switch (e.code) {
         case "KeyA":
-            action.moveLeft = false;
-            action.idle = true;
+            controller.left = false;
             break;
-        case "ArrowRight":
         case "KeyD":
-            action.moveRight = false;
-            action.idle = true;
-            break;
-        case "Space":
-            action.jump = false;
-            action.idle = true;
-            break;
-        case "Control":
-            action.guard = false;
-            action.idle = true;
-            break;
-        case "KeyF":
-            action.kick = false;
-            action.idle = true;
-            break;
-        case "KeyE":
-            action.punch = false;
-            action.idle = true;
-            break;
-        case "KeyQ":
-            action.super = false;
-            action.idle = true;
-            break;
-        default:
-            action.idle = true;
+            controller.right = false;
             break;
     }
 }
