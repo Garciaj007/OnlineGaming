@@ -131,18 +131,13 @@ function RigidBody(){
     this.acceleration = new Vector();
 }
 
-function Animation(sprite = new Sprite()){
+function Animation(sprite = new Sprite()) {
     this.frameIndex = 0;
     this.tickCount = 0;
-    this.ticksPerFrame = sprite.ticksPerFrame;
-    this.numOfFrames = sprite.numOfFrames;
-    this.loop = sprite.loop;
-    this.size = sprite.size;
-    this.position = sprite.position;
+    this.sprite = sprite;
+    
     this.image = new Image();
     this.image.src = sprite.URL;
-    this.sprite = sprite;
-    //this.done = false;
 }
 
 function Player(initSprite) {
@@ -160,18 +155,18 @@ function Vector(x = 0, y = 0) {
 Animation.prototype.update = function () {
     if (arguments.length == 0) {
         this.tickCount += 1;
-        if (this.tickCount > this.ticksPerFrame) {
+        if (this.tickCount > this.sprite.ticksPerFrame) {
             this.tickCount = 0;
-            if (this.frameIndex < this.numOfFrames - 1) {
+            if (this.frameIndex < this.sprite.numOfFrames - 1) {
                 this.frameIndex += 1;
-            } else if (this.loop) {
+            } else if (this.sprite.loop) {
                 this.frameIndex = 0;
             } else {
                 console.log("Oneshot done...");
             }
         }
     } else {
-        if (arguments[0] < this.numOfFrames - 1) {
+        if (arguments[0] < this.sprite.numOfFrames - 1) {
             this.frameIndex = arguments[0];
         }
     }
@@ -179,18 +174,13 @@ Animation.prototype.update = function () {
 
 Animation.prototype.draw = function (position = new Vector()) {
     //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-    ctx.drawImage(this.image, this.frameIndex * this.size.x / this.numOfFrames, 0, this.size.x / this.numOfFrames, this.size.y, this.position.x, this.position.y, this.size.x / this.numOfFrames, this.size.y);
+    ctx.drawImage(this.image, this.frameIndex * this.sprite.size.x / this.sprite .numOfFrames, 0, this.sprite.size.x / this.sprite.numOfFrames, this.sprite.size.y, this.sprite.position.x, this.sprite.position.y, this.sprite.size.x / this.sprite.numOfFrames, this.sprite.size.y);
+
 }
 
-Animation.prototype.set = function (sprite) {
-    this.ticksPerFrame = sprite.ticksPerFrame;
-    this.numOfFrames = sprite.numOfFrames;
-    this.loop = sprite.loop;
-    this.size = sprite.size;
-    //this.image = new Image();
-    this.image.src = sprite.URL;
-    
-    this.done = false;
+Animation.prototype.set = function (_sprite = new Sprite) {
+    this.sprite = _sprite;
+    this.image.src = _sprite.URL;
 }
 
 Animation.prototype.reset = function () {
@@ -223,7 +213,7 @@ RigidBody.prototype.applyForce = function(_force = new Vector){
 }
 
 Player.prototype.update = function () {
-    this.animation.position = this.rigidbody.position;
+    this.animation.sprite.position = this.rigidbody.position;
     this.animation.draw();
     this.animation.update();
     this.rigidbody.update();
