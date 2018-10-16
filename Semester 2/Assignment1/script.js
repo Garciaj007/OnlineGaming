@@ -11,8 +11,8 @@ var MAP = [
     [0, 2, 0, 1, 0, 0, 0, 0],
     [0, 0, 1, 0, 1, 0, 0, 0],
     [0, 0, 1, 0, 0, 2, 0, 1],
-    [0, 0, 2, 0, 0, 0, 0, 1],
-    [3, 0, 0, 0, 2, 0, 0, 0],
+    [0, 3, 2, 0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 2, 0, 0, 0],
 ];
 
 const SIZE = 70;
@@ -32,6 +32,9 @@ const HEIGHT = COLUMNS * SIZE;
 
 var controller = {
     action: {
+        enter: false,
+        yes: false,
+        no: false,
         fight: false,
         guard: false,
         flee: false
@@ -48,6 +51,9 @@ var canvas, ctx, intervalID;
 var countdown = 3;
 
 var background, food, enemy;
+var displayUI = false;
+var displayMsg = false;
+var message = "HELLO";
 
 var playerSprites = {
     ramonaIdle: new Sprite("Sprites/Ramona_Idle.png", 6, 4, true, new Vector(300, 70)),
@@ -70,25 +76,31 @@ function init() {
     ctx = canvas.getContext('2d');
     canvas.width = WIDTH;
     canvas.height = HEIGHT;
-    
-    background = new Animation(new Sprite("Sprites/Map.jpg", 1, 0, false, new Vector(1040,840)));
-    
+
+    background = new Animation(new Sprite("Sprites/Map.jpg", 1, 0, false, new Vector(1040, 840)));
+
     player = new Player(playerSprites.ramonaIdle);
     enemy = new Player();
     villain = new Player(villianSprites.Idle);
-    
+
     moveVillian();
-    
+
     intervalID = setInterval(Render, 16);
 }
 
 function Render() { // this a Never endling loop of hell..........
     clearCanvas();
+
+    //draws the background
     ctx.save();
     ctx.translate(-15, -20);
     background.update(1);
     background.draw();
     ctx.restore();
+
+    ctx.fillStyle = "Grey";
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
 
     for (var i = 0; i < COLUMNS; i++) {
         for (var j = 0; j < ROWS; j++) {
@@ -102,86 +114,147 @@ function Render() { // this a Never endling loop of hell..........
                     ctx.fillRect(i * SIZE, j * SIZE, SIZE, SIZE);
                     break;
                 case ITEMS.HOME:
-                    ctx.fillStyle = "Green";
-                    ctx.fillRect(i * SIZE, j * SIZE, SIZE, SIZE);
+                    ctx.fillStyle = "White";
+                    ctx.font = "700 24px sans-serif";
+                    ctx.fillText("ESCAPE", i * SIZE, j * SIZE + 20, SIZE);
             }
         }
     }
-    
+
     player.animation.draw();
     player.animation.update();
     villain.animation.draw();
     villain.animation.update();
-    
+
     player.animation.sprite.position.x = player.pos.row * SIZE;
     player.animation.sprite.position.y = player.pos.col * SIZE;
     villain.animation.sprite.position.x = villain.pos.row * SIZE;
     villain.animation.sprite.position.y = villain.pos.col * SIZE;
-    
-    if(countdown <= 0){
+
+    if (countdown <= 0) {
         moveVillian();
         checkSquare();
         countdown = 3;
     }
+    UI();
+    displayChoice();
+    displayMessage();
 
-    if (controller.direction.left) {
-        //move to the left if not out of bounds
-        player.MoveLeft();
-        controller.direction.left = false;
-        checkSquare();
-        countdown--;
-    } else if (controller.direction.right) {
-        //move th the right if not out of bounds
-        player.MoveRight();
-        controller.direction.right = false;
-        checkSquare();
-        countdown--;
-    } else if (controller.direction.up) {
-        //move up if not out of bounds
-        player.MoveUp();
-        controller.direction.up = false;
-        checkSquare();
-        countdown--;
-    } else if (controller.direction.down) {
-        //move down if in bounds
-        player.MoveDown();
-        checkSquare();
-        controller.direction.down = false;
-        countdown--;
+    Controller();
+}
+
+function UI(){
+    let health = 100;
+    ctx.fillStyle = "Black";
+    ctx.font = "700 18px sans-serif";
+    ctx.fillText("HEALTH: " + health, 0, 20, 200);
+    ctx.fillText("BILLS: ", WIDTH - 200, 20, 200);
+}
+
+function displayChoice() {
+    if (displayUI === true) {
+        ctx.fillStyle = 'rgba(255,255,255, 0.5)';
+        ctx.fillRect(WIDTH / 2 - 200, HEIGHT / 2 - 100, 400, 200);
+        ctx.fillStyle = 'Black';
+        ctx.font = "18px sans-serif";
+        ctx.fillText(message, WIDTH / 2 - 50, HEIGHT / 2 - 50, 200);
+        ctx.font = '700 14px sans-serif';
+        ctx.fillText("press key to continue...", WIDTH / 2 - 100, HEIGHT / 2 - 10, 200);
+        ctx.font = "700 48px arial";
+        ctx.fillText("Y / N", WIDTH / 2 - 75, HEIGHT / 2 + 50, 200);
     }
 }
 
-function moveVillian(){
-    
-    while(true){
+function displayMessage() {
+    if (displayMsg === true) {
+        ctx.fillStyle = 'rgba(255,255,255, 0.5)';
+        ctx.fillRect(WIDTH / 2 - 200, HEIGHT / 2 - 50, 400, 100);
+        ctx.fillStyle = 'Black';
+        ctx.font = "18px sans-serif";
+        ctx.fillText(message, WIDTH / 2 - 50, HEIGHT / 2, 200);
+        ctx.font = '700 14px sans-serif';
+        ctx.fillText("press any key to continue...", WIDTH / 2 - 110, HEIGHT / 2 + 25, 200);
+    }
+}
+
+function Controller() {
+    if (displayUI != true && displayMsg != true) {
+        if (controller.direction.left) {
+            //move to the left if not out of bounds
+            player.MoveLeft();
+            controller.direction.left = false;
+            checkSquare();
+            countdown--;
+        } else if (controller.direction.right) {
+            //move th the right if not out of bounds
+            player.MoveRight();
+            controller.direction.right = false;
+            checkSquare();
+            countdown--;
+        } else if (controller.direction.up) {
+            //move up if not out of bounds
+            player.MoveUp();
+            controller.direction.up = false;
+            checkSquare();
+            countdown--;
+        } else if (controller.direction.down) {
+            //move down if in bounds
+            player.MoveDown();
+            checkSquare();
+            controller.direction.down = false;
+            countdown--;
+        }
+    } else if(displayUI){
+        if(controller.action.yes){
+            //engage enemy
+            displayUI = false;
+            controller.action.yes = false;
+        } else if(controller.action.no) {
+            //disengage enemy
+            displayUI = false;
+            controller.action.no = false;
+        }
+    } else {
+        if(controller.action.enter){
+            displayMsg = false;
+            controller.action.enter = false;
+        }
+    }
+}
+
+function moveVillian() {
+    while (true) {
         let r = randomRange(0, ROWS);
         let c = randomRange(0, COLUMNS);
-        
-        if(MAP[r][c] === 0){
+
+        if (MAP[r][c] === 0) {
             MAP[villain.pos.col][villain.pos.row] = 0;
             villain.MoveTo(c, r);
             MAP[r][c] = 4;
             break;
-        } 
+        }
     }
 }
 
-//Returns a random Int in range
-function randomRange(min, max){
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min);
-}
-
-function checkSquare(){
-    switch(MAP[player.pos.col][player.pos.row]){
-        case ITEMS.CAMP : this.food += 1;
+function checkSquare() {
+    switch (MAP[player.pos.col][player.pos.row]) {
+        case ITEMS.CAMP:
+            this.food += 1;
             break;
-        case ITEMS.HOME : console.log("Welcome Home...");
+        case ITEMS.HOME:
+            console.log("Welcome Home...");
+            message = "Welcome Home..."
+            displayMsg = true;
             break;
-        case ITEMS.ENEMY : console.log("Engage Enemy?");
+        case ITEMS.ENEMY:
+            console.log("Engage Enemy?");
+            message = "Engage Enemy?";
+            displayUI = true;
             break;
-        case ITEMS.VILLAIN : console.log("Engage Villain?");
+        case ITEMS.VILLAIN:
+            console.log("Engage Villain?");
+            message = "Engage Villain?";
+            displayUI = true;
             break;
     }
 }
@@ -216,7 +289,7 @@ function Player(initSprite) {
             this.pos.col++;
         }
     }
-    this.MoveTo = function(_row, _col){
+    this.MoveTo = function (_row, _col) {
         this.pos.row = _row;
         this.pos.col = _col;
     }
@@ -260,7 +333,7 @@ Sprite.prototype.bottom = function () {
     return this.y + this.size.y;
 }
 
-Animation.prototype.update = function () {
+Animation.prototype.update = function (spritetoDefault = new Sprite) {
     if (arguments.length == 0) {
         this.tickCount += 1;
         if (this.tickCount > this.sprite.ticksPerFrame) {
@@ -271,6 +344,8 @@ Animation.prototype.update = function () {
                 this.frameIndex = 0;
             } else {
                 console.log("Oneshot done...");
+                this.set(spritetoDefault);
+                this.image.src = spritetoDefault.URL;
             }
         }
     } else {
@@ -308,12 +383,28 @@ Vector.prototype.add = function (v = new Vector()) {
 
 //Helper Functions
 
+//Returns a random Int in range
+function randomRange(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
 function clearCanvas() {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 }
 
 function keyupHandler(e) {
     switch (e.code) {
+        case "KeyY":
+            controller.action.yes = true;
+            break;
+        case "KeyN":
+            controller.action.no = true;
+            break;
+        case "Enter":
+            controller.action.enter = true;
+            break;
         case "KeyA":
             controller.direction.left = true;
             break;
